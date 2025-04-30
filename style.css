@@ -22,23 +22,33 @@ h2{
 body {
     font-family: sans-serif;
     margin: 0;
-    background-color: #f8f9fa; /* 全体の背景色 */
-    color: #333; /* 基本の文字色 */
+    background-color: #f8f9fa;
+    color: #333;
+    min-height: 100vh;
+} 
+
+h1 {
+    margin: 2rem auto;
 }
 
 h2 {
     margin-top: 0;
     margin-bottom: 20px;
-    font-size: 1.8em;
-    border-bottom: 1px solid #eee; /* 下線 */
+    font-size: 1.8rem;
+    border-bottom: 1px solid #eee;
     padding-bottom: 10px;
 }
-
+/* 
 h3 {
-    font-size: 1.2em;
+    font-size: 1.2rem;
     color: #555;
     margin-top: 30px;
     margin-bottom: 10px;
+} */
+
+figcaption {
+    font-size: 1.5rem;
+    text-align: center;
 }
 
 ul {
@@ -49,15 +59,19 @@ ul {
 
 li {
     margin-bottom: 10px;
-    font-size: 1em;
+    font-size: 1rem;
     line-height: 1.6;
 }
 
 li::before { /* リスト項目の前に四角 */
     content: "■";
-    color: #3f8d56; /* 四角の色 */
+    color: hsl(261, 76%, 38%); /* 四角の色 */
     margin-right: 8px;
     display: inline-block;
+}
+
+a:visited {
+    color: #00e;
 }
 
 .main-content {
@@ -73,28 +87,39 @@ li::before { /* リスト項目の前に四角 */
 }
 
 .image-section img {
-    width: 100%; /* 親要素いっぱいに広げる */
-    height: auto; /* アスペクト比維持 */
+    width: 100%; 
+    height: auto; 
     display: block; /* 余計な隙間をなくす */
     border-radius: 5px; /* 少し角丸 */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 影 */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .profile-section {
-    flex: 1; /* 右カラム */
-    min-width: 300px; /* 最小幅 */
-    background-color: #fff; /* プロフィール背景 */
+    flex: 1;
+    min-width: 300px; 
+    background-color: #fff;
     padding: 30px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .company-label {
-    background-color: #3a72a9; /* ラベル背景 */
-    color: #d6e4f1; /* ラベル文字色 */
+    background-color: #54d443d2;
+    color: #d6e4f1; 
     padding: 5px 10px;
     border-radius: 4px;
-    font-size: 0.9em;
-    display: inline-block; /* 必要なら */
+    font-size: 0.9rem;
+    display: inline-block; 
     margin-bottom: 20px;
+}
+
+.labels {
+    display: inline-block;
+    min-width: 80px;
+    vertical-align: top;
+}
+
+.values {
+    display: inline-block;
+    vertical-align: top;
 }
