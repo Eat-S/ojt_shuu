@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="author" content="Dao Zhou, or Tou Shuu">
+    <meta name="author" content="Dao Zhou, or Tou Shuu"> 
     <meta name="description" content="First html page, a profile page with my cat photo.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>プロフィール - 周稲</title>
@@ -13,29 +13,28 @@
 </head>
 
 <body>
-    <main class="main-content">
+    <main>
         <h1>プロフィール</h1>
         <hr>
         <figure class="image-section">
             <img src="thumbnail.jpg" alt="cat">
-            <figcaption title="cat"><strong>実家のねこ</strong></figcaption>
+            <figcaption title="cat">実家のねこ</figcaption>
         </figure>
         <hr>
         <section class="profile-section">
             <h2>基本情報</h2>
             <a href="https://www.ipa.go.jp/shiken/kubun/fe.html">基本情報とは？</a>
-            <br><br>
             <div class="profile-details">
                 <ul>
                     <li><span class="labels">お名前：</span><span class="values">周稲(シュウトウ)</span></li>
                     <li><span class="labels">年数：</span><span class="values">1年目 (業界2年)</span></li>
-                    <li><span class="labels">所属：</span><span class="values"><a class="company-label" href="https://kard.co.jp/">KARD</a></span></li>
+                    <li><span class="labels">所属：</span><a class="company-label" href="https://kard.co.jp/">KARD</a></li>
                 </ul>
             </div>
             <h2>趣味</h2>
             <div class="profile-details">
                 <ul>
-                    <li>旅行<br>&nbsp;今まで行った旅先:
+                    <li>旅行<br>&nbsp;今まで行った国:
                         <ul>
                             <li>日本</li>
                             <li>アメリカ</li>
@@ -43,20 +42,20 @@
                             <li>シンガポール</li>
                         </ul>
                     </li>
-                    <li>AI<br>&nbsp;分野：
+                    <li>AI<br>&nbsp;やりたい分野：
                         <ul>
-                            <li>画像生成(開発、応用)</li>
-                            <li>言語モデル(応用)</li>
+                            <li>画像生成</li>
+                            <li>言語モデル</li>
                         </ul>
                     </li>
                 </ul>
             </div>
             <h2>最近意識している言葉</h2>
-            <p><del><strong>ニホンゴッテムズイッス（by今野さん）</strong></del></p>
+            <p class="quote">&#8220;ニホンゴッテムズイッス&#8221;<span class="nowrap">&#8212;&#8212;今野さん</span></p>
         </section>
     </main>
     <footer class="footer-content">
-        <p>作成：<time datetime="2025-04-28">2025/4/28</time></p>
+        <p>作成：<time datetime="2025-04-28">2025/4/28</time><span class="toright"> 編集：<time datetime="2025-05-01">2025/5/1</time></span></p>
     </footer>
 </body>
 

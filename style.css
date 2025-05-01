@@ -1,42 +1,35 @@
-/* body{
-    font-family: Arial, sans-serif;
-    background-color: #53a786;
+@import url('https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap');
+/* import font: Kosugi Maru, from google fonts*/
+* {
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    box-sizing: border-box;
 }
-header{
-    background-color: #2c3e50;
-    color: white;
-    padding: 10px 0;
-    text-align: center;
-}
-h1{
-    font-size: 2em;
-    margin: 0;
-}
-h2{
-    font-size: 1.5em;
-    margin: 20px 0 10px;
-} */
 
 body {
     font-family: sans-serif;
-    margin: 0;
     background-color: #f8f9fa;
     color: #333;
-    min-height: 100vh;
+    min-height: 100%;
 } 
+
+main {
+    display: flex; /* horizonal */
+    flex-wrap: wrap; /* スマホ表示などで折り返す */
+    font-size: 1.6rem;
+    padding: 20px;
+    gap: 40px; /* カラム間の隙間 */
+}
 
 h1 {
     margin: 2rem auto;
 }
 
 h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
     font-size: 1.8rem;
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
+    margin-bottom: 1rem;
 }
 /* 
 h3 {
@@ -46,39 +39,56 @@ h3 {
     margin-bottom: 10px;
 } */
 
+footer{
+    position: fixed;
+    background-color: #333;
+    color: #eee;
+    bottom: 0;  
+}
+
 figcaption {
     font-size: 1.5rem;
+    font-weight: bold;
     text-align: center;
 }
 
 ul {
-    list-style: none;
-    /* padding: 0%; */
-    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    list-style: square;
+    padding: 1%;
 }
 
 li {
-    margin-bottom: 10px;
-    font-size: 1rem;
-    line-height: 1.6;
+    flex: 1;
+    margin: 0 0 0 1rem;
+    padding: 5px;
+    font-size: 1rem;  
 }
 
-li::before { /* リスト項目の前に四角 */
-    content: "■";
-    color: hsl(261, 76%, 38%); /* 四角の色 */
+::marker{
     margin-right: 8px;
     display: inline-block;
+    color: hsl(261, 76%, 38%);
 }
 
-a:visited {
-    color: #00e;
+/* li::before {
+    content: "■";
+    color: hsl(261, 76%, 38%);
+    margin-right: 8px;
+    display: inline-block;
+} */
+
+a{
+    color: rgb(0, 0, 0);
+    text-decoration: none;
 }
 
-.main-content {
-    display: flex; /* 左右カラムレイアウト */
-    flex-wrap: wrap; /* スマホ表示などで折り返す */
-    padding: 40px;
-    gap: 40px; /* カラム間の隙間 */
+a:hover, a:focus{
+    /* color:dodgerblue */
+    opacity: 0.8;
+    text-decoration: underline;
 }
 
 .image-section {
@@ -89,37 +99,56 @@ a:visited {
 .image-section img {
     width: 100%; 
     height: auto; 
-    display: block; /* 余計な隙間をなくす */
-    border-radius: 5px; /* 少し角丸 */
+    border-radius: 5px; 
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .profile-section {
     flex: 1;
     min-width: 300px; 
+    max-width: 800px;
     background-color: #fff;
     padding: 30px;
-    border-radius: 5px;
+    border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.company-label {
-    background-color: #54d443d2;
-    color: #d6e4f1; 
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    display: inline-block; 
-    margin-bottom: 20px;
+.profile-details {
+    background-color: yellowgreen;
+    padding: 0;
 }
 
 .labels {
     display: inline-block;
     min-width: 80px;
-    vertical-align: top;
+    /* vertical-align: top; */
+    font-weight: 400;
 }
 
 .values {
+    font-family: "Kosugi Maru";
+    font-weight: 400;
     display: inline-block;
-    vertical-align: top;
+}
+
+.company-label {
+    background-color: #4387d4d2;
+    color: #180e0a; 
+    padding: 5px;
+    font-size: 0.7rem;
+    display: inline-block; 
+}
+
+.quote {
+    font-style: italic;
+    font-size: 2rem;
+    text-decoration: line-through;
+}
+
+.nowrap {
+    white-space: nowrap;
+    font-size: 1.5rem;
+    float: right;
+    position: relative;
+    bottom: -2rem;
 }
