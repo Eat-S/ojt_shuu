@@ -1,0 +1,48 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+    background-color: #f0f4ff;
+}
+
+header {
+    margin: 30px;
+    display: block;
+    margin: 20px auto;
+    text-align: justify;
+    width: 100%;
+    max-width: 1000px;
+}
+
+h1 {
+    font-weight: normal;
+}
+
+ol {
+    list-style-type:disc;
+}
+
+a {
+    color: #000;    
+}
+
+a:hover {
+    opacity: 0.7;
+}
+
+footer {
+    text-align: center;
+    font-size: smaller;
+}
+
+.banner {
+    display: block;
+    margin: auto;
+    margin-bottom: 50px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.index {
+    background-color: #FFF;
+}
