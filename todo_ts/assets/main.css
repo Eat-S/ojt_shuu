@@ -1,0 +1,54 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+header {
+  text-align: center;
+}
+
+h1 {
+  margin: 3rem;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+}
+
+
+
+/* #todo_list_area h2 { */
+h2 {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+li {
+  list-style-position: inside;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+}
+
+.todo-datetime,
+.done-datetime {
+  display: block;
+  width: 100%;
+  text-align: right;
+  margin-right: 20px;
+}
+
+.todo-text,
+.done-text {
+  /* use flex-grow to hold a whole line */
+  flex-grow: 1;
+  /* overflow: hidden; */
+  margin-right: 20px;
+}
