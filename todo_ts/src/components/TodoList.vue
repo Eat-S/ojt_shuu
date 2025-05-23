@@ -27,8 +27,8 @@ function handleComplete(id: number) {
       <li v-if="pendingTodos.length === 0">No task</li>
       <template v-else>
         <li v-for="todo in pendingTodos" :key="todo.id">
-          <span class="todo-text">{{ todo.content }}</span>
-          <span v-if="todo.deadline" class="todo-datetime">{{ todo.deadline }}</span>
+          <span>{{ todo.content }}</span>
+          <span v-if="todo.deadline">{{ todo.deadline }}</span>
           <input type="checkbox" class="todo-checkbox" @change="handleComplete(todo.id)" />
         </li>
       </template>

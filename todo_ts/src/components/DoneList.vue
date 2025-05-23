@@ -25,8 +25,8 @@ function handleDelete(id: number): void {
       <h2>Done:</h2>
       <ul>
         <li v-for="dones in doneTodos" :key="dones.id">
-          <span class="done-text">{{ dones.content }}</span>
-          <span v-if="dones.deadline" class="done-datetime">{{ dones.deadline }}</span>
+          <span>{{ dones.content }}</span>
+          <span v-if="dones.deadline">{{ dones.deadline }}</span>
           <button class="delete-button" @click="handleDelete(dones.id)">
             <img src="../assets/trash.svg" alt="delete" />
           </button>
