@@ -14,11 +14,11 @@ body {
 } 
 
 main {
-    display: flex; /* horizonal */
-    flex-wrap: wrap; /* スマホ表示などで折り返す */
+    display: flex; 
+    flex-wrap: wrap; 
     font-size: 1.6rem;
     padding: 20px;
-    gap: 40px; /* カラム間の隙間 */
+    gap: 40px;
 }
 
 h1 {
@@ -92,8 +92,8 @@ a:hover, a:focus{
 }
 
 .image-section {
-    flex: 0.8; /* 左カラム */
-    min-width: 300px; /* 最小幅 */
+    flex: 0.8; 
+    min-width: 300px;
 }
 
 .image-section img {
