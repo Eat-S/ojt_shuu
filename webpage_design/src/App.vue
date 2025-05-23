@@ -149,7 +149,6 @@ function initializeObjects(): void {
 function insertNewItem(purchasedItem: { name: string; stock: number }): void {
   /**
    * Append new item to inventory list with incrementing itemId.
-   * (called by onMounted() to initialize default value)
    * @param purchasedItem: object containing name and stock
    * @return: void
    */
@@ -208,6 +207,7 @@ function tradeItem(trade: TradeInfo): void {
     }
   }
 }
+// TODO: break down into smaller functions
 
 function updateCash(changes: CashChange): void {
   /**
