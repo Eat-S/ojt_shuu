@@ -6,6 +6,7 @@ import InventoryTab from './components/InventoryTab.vue';
 
 import type { Item, Cash, TradeInfo } from '@/types'
 
+// types & interfaces:
 // define interface of tabs
 interface TabInfo {
   id: number;
@@ -21,6 +22,8 @@ interface TabInfo {
 // type of changing data received from tab 2.
 type CashChange = Partial<Cash>
 
+
+// tab related:
 // tab group
 const tabConfig: TabInfo[] = [
   {
@@ -58,6 +61,7 @@ const currentTab = computed(() => {
 })
 
 
+// revenue related:
 // stores remaining cash data
 const currentCash = reactive<Cash>({
   10000: 0,
@@ -72,6 +76,9 @@ const currentCash = reactive<Cash>({
 })
 // stores remaining deposit data
 const currentBalance = ref(0);
+// define revenue:
+const revenue = ref(0)
+
 // stores default trade data
 const DEFAULT_TRADE_INFO: Readonly<TradeInfo> = Object.freeze({
   id: 0,
@@ -81,7 +88,7 @@ const DEFAULT_TRADE_INFO: Readonly<TradeInfo> = Object.freeze({
   isCash: null,
 })
 // stores trade data
-let trade = ref<TradeInfo>({...DEFAULT_TRADE_INFO})
+let trade = ref<TradeInfo>({ ...DEFAULT_TRADE_INFO })
 // stores default pending cash data
 const DEFAULT_PENDING_CASH: Readonly<Cash> = Object.freeze({
   10000: 0,
@@ -108,12 +115,13 @@ const totalCashValue = computed(() => {
 })
 
 
+
+// stock related:
 // define item id, starts from 1
 const itemId = ref(1)
 // define inventory group: array of item
 const inventory = ref<Item[]>([])
-// define revenue:
-const revenue = ref(0)
+
 
 
 // initialize with default values
@@ -131,19 +139,20 @@ onMounted(() => {
 function initializeObjects(): void {
   /**
    * Initialize trade and pendingCashChange objects to default values.
+   * @param: void
    * @return: void
    */
   trade.value = { ...DEFAULT_TRADE_INFO }
   pendingCashChange.value = { ...DEFAULT_PENDING_CASH }
 }
 
-
 function insertNewItem(purchasedItem: { name: string; stock: number }): void {
-  /** Append new item to inventory list with incrementing itemId.
-  * (called by onMounted() to initialize default value)
-  * @param purchasedItem: object containing name and stock
-  * @return: void
-  */
+  /**
+   * Append new item to inventory list with incrementing itemId.
+   * (called by onMounted() to initialize default value)
+   * @param purchasedItem: object containing name and stock
+   * @return: void
+   */
   const newItem: Item = {
     id: itemId.value++,
     ...purchasedItem,
@@ -154,7 +163,7 @@ function insertNewItem(purchasedItem: { name: string; stock: number }): void {
 
 function tradeItem(trade: TradeInfo): void {
   /**
-   * Manage changes to existing items
+   * Manage changes to existing items.
    * @param trade: object containing trade information, emitted from child
    * @return: void
    */
@@ -206,6 +215,7 @@ function updateCash(changes: CashChange): void {
    * @param changes: object containing cash changes
    * @return: void
    */
+
   Object.keys(changes).forEach((key) => {
     // currentCash[key] += changes[key]
     // convert string key to number key for type security
@@ -223,6 +233,7 @@ function calcCash(amount: number): void {
    * @param amount: total amount to be changed, negative if purchasing
    * @return: void
    */
+
   console.log(`handling amount: ${amount}`)
   // keys are cash denominations
   const denomination = Object.keys(currentCash).map(Number)
@@ -252,16 +263,18 @@ function updateBalance(amount: number): void {
    * @param amount: amount to be changed
    * @return: void
    */
+
   currentBalance.value += amount
   console.log(`balance changes to: ${currentBalance.value}`)
 }
 
 function handleSubmit(newTrade: TradeInfo): void {
   /**
-   * Handle submit event from child component.
+   * Handle submitTrade event from child component.
    * @param newTrade: object containing trade information
    * @return: void
    */
+
   console.log(`submitTrade event emitted:`)
   // cannot use trade = newTrade for const
   Object.assign(trade.value, newTrade)
@@ -270,6 +283,12 @@ function handleSubmit(newTrade: TradeInfo): void {
 }
 
 function handleCashChange(changes: CashChange): void {
+  /**
+   * Handle submitCashChange event from child component.
+   * @param changes: object containing cash changes
+   * @return: void
+   */
+
   console.log(`submitCashChange event emitted:`)
   updateCash(changes)
   console.log(`pending cash changes: ${JSON.stringify(pendingCashChange.value)}`)

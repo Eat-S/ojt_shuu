@@ -2,7 +2,7 @@
 import { warn, watch, watchEffect, ref, onMounted } from 'vue';
 import type { TradeInfo, Item } from '@/types'
 
-// inherit props from parent
+// define props to inherit from parent
 const props = defineProps<{
   inventory: Item[];
   totalCashValue: number;
@@ -18,7 +18,7 @@ watch(() => props.trade, (newValue) => {
   newTrade.value = {...newValue,date: formattedDate()}
 })
 
-// set default date to today, YYYYMMDD
+// returns default date to today, YYYYMMDD
 const formattedDate = (): string => {
   const date = new Date();
   const year = date.getFullYear();
@@ -27,7 +27,7 @@ const formattedDate = (): string => {
   return `${year}${month}${day}`;
 }
 
-// data to be passed to parent
+// emit event to parent
 const emits = defineEmits(['submitTrade']);
 function handleSubmit() {
   switch (true) {
@@ -39,6 +39,7 @@ function handleSubmit() {
       window.alert("商品名を入力してください");
       break;
     case newTrade.value.id === -1 && !newTrade.value.newName:
+      // if new item is selected but no name is set
       window.alert("新しい商品名を入力してください");
       break;
     case newTrade.value.quantity === 0 || newTrade.value.quantity === undefined:
@@ -66,8 +67,8 @@ function handleSubmit() {
 }
 
 
+// auto correct values
 watchEffect(() => {
-  // auto correct values
   // when purchase:
   if (newTrade.value.isPurchase) {
     // 1. if amount is greater than total cash value, set isCash to false or set amount to current maximum.

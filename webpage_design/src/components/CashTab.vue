@@ -2,7 +2,7 @@
 import { ref, computed, watch, watchEffect } from 'vue';
 import type { Cash } from "@/types";
 
-// inherit props from parent
+// define props to inherit from parent
 const props = defineProps<{
   currentCash: Cash;
   pendingCashChange: Cash;
@@ -20,7 +20,7 @@ watch(() => props.pendingCashChange, (newValue) => {
   customizedCash.value = {...newValue}
 })
 
-
+// computed sum of customized cash
 const cashSum = computed(() => {
   let sum = 0;
   Object.keys(customizedCash.value).forEach((key) => {
@@ -44,6 +44,7 @@ watchEffect(() => {
   }
 })
 
+// emit event to parent
 const emits = defineEmits(['submitCashChange'])
 function submitCashChange() {
   // submit only if cashSum equals to amount or balance
