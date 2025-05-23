@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Item, Cash } from "@/types";
 
-// define props to inherit from parent,
+// define props to inherit from parent
 const props = defineProps<{
   inventory: Item[];
   currentCash: Cash;
@@ -12,7 +12,7 @@ const props = defineProps<{
 
 // emit event to parent
 const emit = defineEmits(['registerTrade']);
-function handleNewTrade():void {
+function handleNewTrade(): void {
   console.log('registerTrade event emitted');
   emit('registerTrade')
 }
@@ -51,7 +51,7 @@ function handleNewTrade():void {
         <span class="balance-amount">{{ props.currentBalance }}</span>
       </li>
     </ul>
-    <button v-if="activeButton===3" @click="handleNewTrade()">新規登録</button>
+    <button v-if="activeButton === 3" @click="handleNewTrade()">新規登録</button>
   </div>
 </template>
 
@@ -86,7 +86,7 @@ button {
 }
 
 button:hover {
-  background-color:#F49367;
+  background-color: #F49367;
   cursor: pointer;
 }
 
@@ -101,15 +101,18 @@ button:hover {
   line-height: 2.3rem;
 }
 
-.item-name, .cash-value, .balance-value {
+.item-name,
+.cash-value,
+.balance-value {
   margin: 0 2rem 0 0;
   font-size: 1.4rem;
   font-weight: bold;
 }
 
-.item-stock, .cash-quantity, .balance-amount {
+.item-stock,
+.cash-quantity,
+.balance-amount {
   margin-left: auto;
   margin-right: 4rem;
 }
-
 </style>

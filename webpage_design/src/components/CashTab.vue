@@ -14,10 +14,10 @@ const props = defineProps<{
 }>()
 
 // backup of pending cash in child
-const customizedCash = ref<Cash>({...props.pendingCashChange})
+const customizedCash = ref<Cash>({ ...props.pendingCashChange })
 watch(() => props.pendingCashChange, (newValue) => {
   console.log("pendingCashChange changed ", customizedCash.value);
-  customizedCash.value = {...newValue}
+  customizedCash.value = { ...newValue }
 })
 
 // computed sum of customized cash
@@ -80,7 +80,7 @@ function submitCashChange() {
         <span class="balance-change">(+{{ isCash ? "-" : amount }}円)</span>
       </div>
     </section>
-    <button v-if="activeButton===2" @click="submitCashChange">確認</button>
+    <button v-if="activeButton === 2" @click="submitCashChange">確認</button>
   </div>
 </template>
 
@@ -209,5 +209,4 @@ button:hover {
   white-space: nowrap;
   flex-shrink: 0;
 }
-
 </style>

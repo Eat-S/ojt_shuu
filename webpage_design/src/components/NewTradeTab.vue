@@ -12,10 +12,10 @@ const props = defineProps<{
 }>();
 
 // backup of object in child and watch for changes
-const newTrade = ref<TradeInfo>({...props.trade})
+const newTrade = ref<TradeInfo>({ ...props.trade })
 watch(() => props.trade, (newValue) => {
   console.log("tradeinfo changed ", props.trade);
-  newTrade.value = {...newValue,date: formattedDate()}
+  newTrade.value = { ...newValue, date: formattedDate() }
 })
 
 // returns default date to today, YYYYMMDD
