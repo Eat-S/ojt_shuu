@@ -1,13 +1,48 @@
 <!DOCTYPE html>
-<html lang="">
-  <head>
+<html lang="jp">
+
+<head>
     <meta charset="UTF-8">
-    <link rel="icon" href="/src/assets/logo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="******">
+    <!-- 公開するため名前を遮る -->
     <title>TODO List</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="icon.png">
+    <script defer src="scripts/main.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>TODO List</h1>
+    </header>
+    <main>
+        <section id="todo_list_area">
+            <h2>TODO:</h2>
+            <ul id="todo_list">
+                <li id="placeholding">No task</li>
+            </ul>
+        </section>
+        <section id="done_area">
+        </section>
+        <section id="add_todo_area">
+            <h2>New:</h2>
+            <form id="add_todo_form">
+                <div class=input_wrapper>
+                    <label for="new_todo_input">Task: </label>
+                    <input type="text" id="new_todo_input" placeholder="ここでタスクを追加" required autofocus>
+                    <label for="new_todo_datetime">Deadline (optional): </label>
+                    <input type="datetime-local" id="new_todo_datetime">
+                </div>
+                <button type="submit" id="submit_todo">追加</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025.5 **</p>
+    </footer>
+
+</body>
+
 </html>
