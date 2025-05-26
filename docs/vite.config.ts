@@ -10,6 +10,8 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
+  // add for run pages in docs folder
+  base: '/ojt_shuu/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
