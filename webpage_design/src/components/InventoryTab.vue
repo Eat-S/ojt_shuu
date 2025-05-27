@@ -22,9 +22,9 @@ function handleNewTrade(): void {
   <div class="detail-component">
     <h2>商品：</h2>
     <ul>
-      <li v-if="props.inventory.length === 0">在庫はありません</li>
+      <li v-if="props.inventory.filter(item => item.stock !== 0).length ===0">在庫はありません</li>
       <template v-else>
-        <li v-for="item in props.inventory" :key="item.id">
+        <li v-for="item in props.inventory.filter(item => item.stock !== 0)" :key="item.id">
           <span class="item-name">{{ item.name }}</span>
           <span class="item-stock">{{ item.stock }}</span>
         </li>
@@ -33,10 +33,12 @@ function handleNewTrade(): void {
 
     <h2>現金：</h2>
     <ul>
-      <li v-for="(value, key) in props.currentCash" :key="key">
-        <span class="cash-value">{{ key }}円：</span>
-        <span class="cash-quantity">{{ value }}</span>
-      </li>
+      <template v-for="(value, key) in props.currentCash" :key="key">
+        <li v-if="value > 0">
+          <span class="cash-value">{{ key }}円：</span>
+          <span class="cash-quantity">{{ value }}</span>
+        </li>
+      </template>
       <br>
       <li>
         <span class="cash-value">合計：</span>

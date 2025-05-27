@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue';
-import { db } from '@/firebase'; // Import Firestore database
-import { collection, addDoc, setDoc, getDocs, query, where, updateDoc, deleteDoc, doc } from 'firebase/firestore'; // Import Firestore functions
 import NewTradeTab from './components/NewTradeTab.vue';
 import CashTab from './components/CashTab.vue';
 import InventoryTab from './components/InventoryTab.vue';
@@ -89,7 +87,7 @@ const DEFAULT_TRADE_INFO: Readonly<TradeInfo> = Object.freeze({
   isPurchase: null,
   isCash: null,
 })
-// initialize new trade data
+// initialize current trade data
 let trade = ref<TradeInfo>({ ...DEFAULT_TRADE_INFO })
 // stores default pending cash data
 const DEFAULT_PENDING_CASH: Readonly<Cash> = Object.freeze({
