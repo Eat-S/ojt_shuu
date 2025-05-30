@@ -3,7 +3,6 @@ import {
   collection,
   getDocs,
   doc,
-  getDoc,
   addDoc,
   updateDoc,
   setDoc,
@@ -12,12 +11,11 @@ import {
 } from 'firebase/firestore';
 import type { TradeInfo, Item, Cash } from '@/types';
 
-/**
- * Reads all item documents from the 'item' collection in Firestore
- * and maps them to the Item[] type.
- * Assumes your item collection is named 'item'.
- */
+
 export async function getInventoryItems(): Promise<Item[]> {
+  /**
+   * Read all item documents from the 'item' collection in Firestore
+   */
   const itemsCollectionRef = collection(db, 'item'); // Collection name is 'item'
   try {
     const querySnapshot = await getDocs(itemsCollectionRef);
@@ -33,39 +31,29 @@ export async function getInventoryItems(): Promise<Item[]> {
     return inventory;
   } catch (error) {
     console.error("Error fetching inventory items:", error);
-    // Depending on your error handling strategy, you might throw,
-    // return empty array, or return a result object with an error.
     throw error;
   }
 }
 
-/**
- * Reads all tradeinfo documents from the 'tradeinfo' collection in Firestore
- * and maps them to the TradeInfo[] type.
- * Assumes your tradeinfo collection is named 'tradeinfo'.
- */
 export async function getTradeLog(): Promise<TradeInfo[]> {
-  const tradesCollectionRef = collection(db, 'tradeinfo'); // Collection name is 'tradeinfo'
+  /**
+   * Read all tradeinfo documents from the 'tradeinfo' collection in Firestore
+   */
+  const tradesCollectionRef = collection(db, 'tradeinfo');
   try {
     const querySnapshot = await getDocs(tradesCollectionRef);
     const trades: TradeInfo[] = [];
     querySnapshot.forEach((docSnap: QueryDocumentSnapshot<DocumentData>) => {
       const data = docSnap.data();
 
-      // The 'id' field within the Firestore 'tradeinfo' document's data
-      // (data.id) refers to the item's ID, as per your description.
-      // The TradeInfo type's 'id' field is for the tradeinfo document's own ID (docSnap.id).
-      // If you need data.id (the item's ID) in your TradeInfo object,
-      // you'll need to add a field like 'itemId' to your TradeInfo interface.
-
       const tradeEntry: TradeInfo = {
-        id: data.id, // The tradeinfo document's auto-generated ID
-        quantity: data.quantity as number,
-        amount: data.amount as number,
-        isPurchase: data.isPurchase as boolean,
-        isCash: data.isCash as boolean,
-        date: data.date as string,
-        newName: data.newName as string,
+        id: data.id,
+        quantity: data.quantity,
+        amount: data.amount,
+        isPurchase: data.isPurchase,
+        isCash: data.isCash,
+        date: data.date,
+        newName: data.newName,
         // If you added itemId to TradeInfo type:
       };
       trades.push(tradeEntry);
@@ -77,19 +65,12 @@ export async function getTradeLog(): Promise<TradeInfo[]> {
   }
 }
 
+const DEFAULT_CASH_DOCUMENT_ID = 'n7durBkG2jOEEmHfypaF';
 /**
  * Reads a specific cash document from the 'cash' collection in Firestore
- * and maps it to the Cash type.
- * Assumes your cash collection is named 'cash'.
- * You need to specify WHICH cash document to fetch.
- * If there's only one, or a known one (e.g., 'main', 'currentStatus').
  */
-const DEFAULT_CASH_DOCUMENT_ID = 'n7durBkG2jOEEmHfypaF';
 
 export async function getCashDocument(): Promise<Cash | null> {
-  // Ensure 'db' is defined and imported correctly.
-  // For this example, let's mock it or assume it's globally available.
-  // const db = {} as any; // Placeholder if db is not imported in this snippet
 
   const cashCollectionRef = collection(db, 'cash');
   try {
@@ -117,14 +98,13 @@ export async function getCashDocument(): Promise<Cash | null> {
 
       for (const key in rawData) {
         if (Object.prototype.hasOwnProperty.call(rawData, key)) {
-          const numericKey = Number(key); // Convert string key to number
+          const numericKey = Number(key); // Convert string ('10000' in db) key to number (10000 local)
           const value = rawData[key];
 
-          // Check if the key is a valid number and the value is also a number
+          // Check if the key and the value is a number
           if (!isNaN(numericKey) && typeof value === 'number') {
             convertedCash[numericKey as keyof Cash] = value;
           } else {
-            // Log a warning for keys that couldn't be converted or values that aren't numbers
             console.warn(`Skipping invalid entry in cash document: key='${key}', value='${value}'`);
           }
         }
@@ -137,18 +117,16 @@ export async function getCashDocument(): Promise<Cash | null> {
     }
   } catch (error) {
     console.error("Error fetching or processing cash document:", error);
-    // Re-throwing the error is often good practice unless you have specific error handling.
     throw error;
   }
 }
 
 export async function addNewItem(itemData: Omit<Item, 'id'>): Promise<string> {
-/**
- * Appends a new item to 'item' collection with an autogenerated ID.
- * Logs the new item's ID to the console.
- * @param itemData - The data for the new item (name, stock).
- * @returns The ID of the newly created item.
- */
+  /**
+   * Append item to 'item' collection with an autogenerated ID.
+   * @param itemData - The data for the new item (name, stock).
+   * @returns The ID of the newly created item.
+   */
   const itemsCollectionRef = collection(db, 'item');
   try {
     // Firestore data for the new item should not include the 'id' field,
@@ -167,12 +145,12 @@ export async function addNewItem(itemData: Omit<Item, 'id'>): Promise<string> {
 
 
 export async function editExistingItem(itemId: string, updates: Partial<Omit<Item, 'id'>>): Promise<void> {
-/**
- * 2. Accesses an existing item with a given ID and edits its attributes.
- * @param itemId - The ID of the item to update.
- * @param updates - An object containing the fields to update (e.g., { name: "New Name", stock: 50 }).
- *                  Can be a partial update.
- */
+  /**
+   * Access an existing item with a given ID and edits its attributes.
+   * @param itemId - The ID of the item to update.
+   * @param updates - An object containing the fields to update (e.g., { name: "New Name", stock: 50 }).
+   *                  Can be a partial update.
+   */
   if (!itemId) {
     throw new Error("Item ID must be provided to edit an item.");
   }
@@ -189,13 +167,13 @@ export async function editExistingItem(itemId: string, updates: Partial<Omit<Ite
 }
 
 export async function addNewTradeInfo(tradeData: TradeInfo): Promise<string> {
-/**
- * 3. Appends a new tradeinfo document to the 'tradeinfo' collection with an autogenerated ID.
- * @param tradeData - The data for the new trade.
- *                    If your firestore `tradeinfo` document contains an `id` field that refers to an `item`'s id,
- *                    ensure `tradeData` includes that field (e.g., `tradeData.itemId`).
- * @returns The ID of the newly created tradeinfo document.
- */
+  /**
+   * Append tradeinfo document to the 'tradeinfo' collection with an autogenerated ID.
+   * @param tradeData - The data for the new trade.
+   *                    If your firestore `tradeinfo` document contains an `id` field that refers to an `item`'s id,
+   *                    ensure `tradeData` includes that field (e.g., `tradeData.itemId`).
+   * @returns The ID of the newly created tradeinfo document.
+   */
 
   const tradesCollectionRef = collection(db, 'tradeinfo');
 
@@ -214,13 +192,16 @@ export async function setCash(
   fullCashData: Cash,
   cashDocId: string = DEFAULT_CASH_DOCUMENT_ID
 ): Promise<void> {
+  /**
+   * Sets or creates a cash document in the 'cash' collection.
+   * @param fullCashData - The complete cash data to set.
+   * @param cashDocId - The ID of the cash document to set. Defaults to a predefined ID.
+   */
   if (!cashDocId) {
     throw new Error("Cash document ID must be provided to set cash.");
   }
   const cashDocRef = doc(db, 'cash', cashDocId);
   try {
-    // setDoc will overwrite the entire document with fullCashData.
-    // If the document does not exist, it will be created.
     await setDoc(cashDocRef, fullCashData);
     console.log(`Cash document with ID ${cashDocId} set/created successfully.`);
   } catch (error) {
