@@ -35,10 +35,10 @@ function handleSubmit() {
     case newTrade.value.isPurchase === undefined:
       window.alert("売買の種類を選択してください");
       break;
-    case newTrade.value.id === 0 || newTrade.value.id === undefined:
+    case newTrade.value.id === "" || newTrade.value.id === undefined:
       window.alert("商品名を入力してください");
       break;
-    case newTrade.value.id === -1 && !newTrade.value.newName:
+    case newTrade.value.id === "-1" && !newTrade.value.newName:
       // if new item is selected but no name is set
       window.alert("新しい商品名を入力してください");
       break;
@@ -53,7 +53,7 @@ function handleSubmit() {
       break;
     default:
       //if name is in inventory but id is -1, set id to correct inventory id
-      if (newTrade.value.id === -1) {
+      if (newTrade.value.id === "-1") {
         const items = props.inventory.find((item) => item.name === newTrade.value.newName);
         if (items) {
           newTrade.value.id = items.id;
@@ -124,12 +124,12 @@ onMounted(() => {
     <section class="trade-detail">
       <label for="trade-item">商品名：</label>
       <select id="trade-item" v-model="newTrade.id" :disabled="activeButton !== 1">
-        <option :value="0" disabled>選んでください</option>
+        <option :value="''" disabled>選んでください</option>
         <option v-for="item in props.inventory" :key="item.id" :value="item.id">{{ item.name }}</option>
-        <option :value="-1">新しい商品</option>
+        <option :value="'-1'">新しい商品</option>
       </select>
     </section>
-    <section v-if="newTrade.id === -1" class="trade-detail">
+    <section v-if="newTrade.id === '-1'" class="trade-detail">
       <label for="new-item-name">新しい商品名：</label>
       <input type="text" id="new-item-name" v-model="newTrade.newName" :disabled="activeButton !== 1" />
     </section>

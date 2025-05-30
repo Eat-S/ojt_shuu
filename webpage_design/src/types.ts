@@ -1,6 +1,6 @@
 // new trade info object
 export interface TradeInfo {
-  id: number;
+  id: string;
   quantity: number;
   amount: number;
   isPurchase: boolean | null;
@@ -10,8 +10,8 @@ export interface TradeInfo {
 }
 
 // define item object including id, name, stock
-export type Item = {
-  id: number,
+export interface Item {
+  id: string,
   name: string,
   stock: number,
 }

@@ -4,7 +4,7 @@ import type { Item, Cash } from "@/types";
 // define props to inherit from parent
 const props = defineProps<{
   inventory: Item[];
-  currentCash: Cash;
+  currentCash: Cash|null;
   totalCashValue: number;
   currentBalance: number;
   activeButton: number;

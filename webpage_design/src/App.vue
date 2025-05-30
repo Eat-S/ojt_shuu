@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue';
-import { db } from '@/firebase'; // Import Firestore database
-import { collection, addDoc, setDoc, getDocs, query, where, updateDoc, deleteDoc, doc } from 'firebase/firestore'; // Import Firestore functions
+import { ref, computed, onMounted } from 'vue';
+import { getInventoryItems, getCashDocument, getTradeLog, addNewItem, addNewTradeInfo, editExistingItem, setCash } from '@/data'; // Import Firestore database
 import NewTradeTab from './components/NewTradeTab.vue';
 import CashTab from './components/CashTab.vue';
 import InventoryTab from './components/InventoryTab.vue';
@@ -15,10 +14,6 @@ interface TabInfo {
   title: string;
   buttonLabel: string;
   color: string;
-  // component: component to be activated
-  // component: Component;
-  // props?: Props;
-  // emits?: Emits;
 }
 
 // type of changing data received from tab 2.
@@ -48,9 +43,9 @@ const tabConfig: TabInfo[] = [
   },
 ]
 // default on tab 3
-const activeTabId = ref(3)
+const activeTabId = ref<number>(3)
 // default button 3 is active
-const activeButton = ref(3)
+const activeButton = ref<number>(3)
 // calculate current page.
 const currentTab = computed(() => {
   const selected = tabConfig.find((tab) => tab.id === activeTabId.value);
@@ -61,29 +56,16 @@ const currentTab = computed(() => {
   console.log(`Tab selected: ${selected.title}`)
   return selected
 })
-
+// TODO: 4th tab of trade history
 
 // revenue related:
 // stores remaining cash data
-const currentCash = reactive<Cash>({
-  10000: 0,
-  5000: 0,
-  1000: 0,
-  500: 0,
-  100: 0,
-  50: 0,
-  10: 0,
-  5: 0,
-  1: 0,
-})
-// stores remaining deposit data
-const currentBalance = ref(0);
-// define revenue:
-const revenue = ref(0)
+const currentCash = ref<Cash | null>(null);
+
 
 // stores default trade data and freeze
 const DEFAULT_TRADE_INFO: Readonly<TradeInfo> = Object.freeze({
-  id: 0,
+  id: "0",
   quantity: 0,
   amount: 0,
   isPurchase: null,
@@ -108,34 +90,45 @@ let pendingCashChange = ref<Cash>({ ...DEFAULT_PENDING_CASH })
 // calculate total cashes:
 const totalCashValue = computed(() => {
   let amount = 0;
-  Object.keys(currentCash).forEach((key) => {
-    // convert string key to number key for type security
-    const numKey = Number(key) as keyof Cash;
-    amount += numKey * currentCash[numKey];
-  })
+  if (currentCash.value) {
+    Object.keys(currentCash.value).forEach((key) => {
+      // convert string key to number key for type security
+      const numKey = Number(key) as keyof Cash;
+      amount += numKey * currentCash.value![numKey];
+    })
+  }
   return amount
 })
 
 
 
 // stock related:
-// define item id, starts from 1
-const itemId = ref(1)
 // define inventory group: array of item
 const inventory = ref<Item[]>([])
+// define tradelog group: array of trade info
+const tradeLog = ref<TradeInfo[]>([])
+
+// stores remaining deposit data
+// const currentBalance = ref(0);
+const currentBalance = computed(() => {
+  let sum = 0
+  for (const trade of tradeLog.value) {
+    if (trade.isCash === false) {
+      sum += trade.isPurchase ? -trade.amount : +trade.amount;
+    }
+  }
+  return sum;
+})
 
 
 
 // initialize with default values
-onMounted(() => {
-  insertNewItem({ name: "item A", stock: 30 })
-  insertNewItem({ name: "goods B", stock: 6 })
-  insertNewItem({ name: "object C", stock: 17 })
-  tradeItem({ id: 2, quantity: 5, amount: 10000, isPurchase: false, isCash: false })
-  updateCash({ 10000: 10, 5000: 3, 1000: 5, 500: 5, 100: 5, 50: 3, 10: 3, 5: 23, 1: 14 })
-  updateBalance(1234567)
-  console.log(`total cash: ${totalCashValue.value}`)
-  console.log(`total balance: ${currentBalance.value}`)
+onMounted(async () => {
+  inventory.value = await getInventoryItems();
+  currentCash.value = await getCashDocument();
+  // currentCash.value = cashDoc ?? { 10000: 0, 5000: 0, 1000: 0, 500: 0, 100: 0, 50: 0, 10: 0, 5: 0, 1: 0 };
+  tradeLog.value = await getTradeLog();
+  initializeObjects()
 })
 
 function initializeObjects(): void {
@@ -148,27 +141,13 @@ function initializeObjects(): void {
   pendingCashChange.value = { ...DEFAULT_PENDING_CASH }
 }
 
-function insertNewItem(purchasedItem: { name: string; stock: number }): void {
-  /**
-   * Append new item to inventory list with incrementing itemId.
-   * @param purchasedItem: object containing name and stock
-   * @return: void
-   */
-  const newItem: Item = {
-    id: itemId.value++,
-    ...purchasedItem,
-  };
-  inventory.value.push(newItem)
-  console.log(`new item appended: ${JSON.stringify(newItem)}`);
-}
-
 function tradeItem(trade: TradeInfo): void {
   /**
    * Manage changes to existing items.
    * @param trade: object containing trade information, emitted from child
    * @return: void
    */
-  if (trade.id !== -1) {
+  if (trade.id !== "-1") {
     // for existing items
     const target = inventory.value.find((item) => item.id === trade.id)
     if (target) {
@@ -177,15 +156,10 @@ function tradeItem(trade: TradeInfo): void {
       const modifier = trade.isPurchase ? 1 : -1
       target.stock += trade.quantity * modifier
       console.log(`Item changed: ${target.name}, quantity: ${trade.quantity}`)
-      revenue.value -= trade.amount * modifier
-      console.log(`revenue changed: ${revenue.value}`)
+      editExistingItem(target.id, { name: target.name, stock: target.stock })
       if (trade.isCash) {
         // call calcCash to modify cash
         calcCash(-trade.amount * modifier)
-      }
-      else {
-        // call updateBalance to modify balance
-        updateBalance(-trade.amount * modifier)
       }
     }
     else {
@@ -195,17 +169,13 @@ function tradeItem(trade: TradeInfo): void {
   else {
     // for new items, isPurchase is always true
     if (trade.isPurchase && trade.newName) {
-      insertNewItem({ name: trade.newName, stock: trade.quantity, }
+      addNewItem({ name: trade.newName, stock: trade.quantity, }
       )
-      // modify revenue
-      revenue.value -= trade.amount
       // modify cash/balance
       if (trade.isCash) {
         calcCash(-trade.amount)
       }
-      else {
-        updateBalance(-trade.amount)
-      }
+
     }
   }
 }
@@ -224,8 +194,11 @@ function updateCash(changes: CashChange): void {
     const numKey = Number(key) as keyof Cash;
     // currentCash[numKey] += changes[numKey]
     // check key existence
-    currentCash[numKey] += changes[numKey] ?? 0;
-    console.log(`current ${numKey} cash count: ${currentCash[numKey]}`)
+    if (currentCash.value) {
+      currentCash.value[numKey] += changes[numKey] ?? 0;
+      setCash(currentCash.value)
+      console.log(`current ${numKey} cash count: ${currentCash.value[numKey]}`)
+    }
   })
 }
 
@@ -238,37 +211,32 @@ function calcCash(amount: number): void {
 
   console.log(`handling amount: ${amount}`)
   // keys are cash denominations
-  const denomination = Object.keys(currentCash).map(Number)
-  // convert to desc
-  denomination.sort((a, b) => b - a)
-  // console.log(`denomination: ${denomination}`)
-  if (amount > 0) {
-    // selling:
-    for (const key of denomination) {
-      pendingCashChange.value[key as keyof Cash] = Math.floor(amount / key)
-      amount -= pendingCashChange.value[key as keyof Cash] * key
+  if (currentCash.value) {
+    const denomination = Object.keys(currentCash.value).map(Number)
+    // convert to desc
+    denomination.sort((a, b) => b - a)
+    // console.log(`denomination: ${denomination}`)
+    if (amount > 0) {
+      // selling:
+      for (const key of denomination) {
+        pendingCashChange.value[key as keyof Cash] = Math.floor(amount / key)
+        amount -= pendingCashChange.value[key as keyof Cash] * key
+      }
     }
-  }
-  else {
-    // purchasing:
-    for (const key of denomination) {
-      pendingCashChange.value[key as keyof Cash] = -Math.min(Math.floor(-amount / key), currentCash[key as keyof Cash])
-      amount -= pendingCashChange.value[key as keyof Cash] * key
+    else {
+      // purchasing:
+      for (const key of denomination) {
+        pendingCashChange.value[key as keyof Cash] = -Math.min(
+          Math.floor(-amount / key),
+          currentCash.value ? currentCash.value[key as keyof Cash] : 0
+        )
+        amount -= pendingCashChange.value[key as keyof Cash] * key
+      }
     }
+    console.log(`pending cash changes: ${JSON.stringify(pendingCashChange.value)}`)
   }
-  console.log(`pending cash changes: ${JSON.stringify(pendingCashChange.value)}`)
 }
 
-function updateBalance(amount: number): void {
-  /**
-   * Manage balance changes.
-   * @param amount: amount to be changed
-   * @return: void
-   */
-
-  currentBalance.value += amount
-  console.log(`balance changes to: ${currentBalance.value}`)
-}
 
 function handleSubmit(newTrade: TradeInfo): void {
   /**
@@ -296,6 +264,7 @@ function handleCashChange(changes: CashChange): void {
   console.log(`pending cash changes: ${JSON.stringify(pendingCashChange.value)}`)
   // initialize pending cash changes and trade:
   initializeObjects()
+  addNewTradeInfo(trade.value)
 }
 
 </script>
@@ -318,7 +287,8 @@ function handleCashChange(changes: CashChange): void {
         <div class="main-placeholder">
         </div>
         <keep-alive>
-          <InventoryTab v-if="currentTab.id === 3" :inventory :currentCash :totalCashValue :currentBalance :activeButton
+          <InventoryTab v-if="currentTab.id === 3" :inventory="inventory" :currentCash :totalCashValue="totalCashValue"
+            :currentBalance="currentBalance" :activeButton="activeButton"
             @registerTrade="activeTabId = 1, activeButton = 1" />
           <NewTradeTab v-else-if="currentTab.id === 1" :inventory :totalCashValue :currentBalance :trade :activeButton
             @submitTrade="(trade) => { handleSubmit(trade); activeTabId = 2; activeButton = 2; }" />

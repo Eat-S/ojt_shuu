@@ -4,7 +4,7 @@ import type { Cash } from "@/types";
 
 // define props to inherit from parent
 const props = defineProps<{
-  currentCash: Cash;
+  currentCash: Cash|null;
   pendingCashChange: Cash;
   totalCashValue: number;
   currentBalance: number;
@@ -14,7 +14,7 @@ const props = defineProps<{
 }>()
 
 // backup of pending cash in child
-const customizedCash = ref<Cash>({ ...props.pendingCashChange })
+const customizedCash = ref<Cash>(props.pendingCashChange)
 watch(() => props.pendingCashChange, (newValue) => {
   console.log("pendingCashChange changed ", customizedCash.value);
   customizedCash.value = { ...newValue }
@@ -37,7 +37,7 @@ watchEffect(() => {
   for (const key in customizedCash.value) {
     const numKey = Number(key) as keyof Cash;
     // check if current cash is less than 0
-    if (props.currentCash[numKey] + customizedCash.value[numKey] < 0) {
+    if (props.currentCash && props.currentCash[numKey] + customizedCash.value[numKey] < 0) {
       console.warn(`現金が不足しています: ${key}円`);
       customizedCash.value[numKey] = -props.currentCash[numKey]
     }
@@ -64,7 +64,7 @@ function submitCashChange() {
       <h2>現金精算：</h2>
       <ul>
         <li v-for="(_, key) in customizedCash" :key="key">
-          <label class="denomination" for="cash-quantity">{{ key }}円： (現在{{ currentCash[key] }}枚)</label>
+          <label class="denomination" for="cash-quantity">{{ key }}円： (現在{{ currentCash?.[key] ?? 0 }}枚)</label>
           <input type="number" id="cash-quantity" v-model="customizedCash[key]" :disabled="!isCash" placeholder="-" />枚
         </li>
       </ul>
