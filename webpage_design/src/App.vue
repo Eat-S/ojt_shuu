@@ -4,6 +4,7 @@ import { getInventoryItems, getCashDocument, getTradeLog, addNewItem, addNewTrad
 import NewTradeTab from './components/NewTradeTab.vue';
 import CashTab from './components/CashTab.vue';
 import InventoryTab from './components/InventoryTab.vue';
+import TradeHistoryTab from './components/TradeHistoryTab.vue';
 
 import type { Item, Cash, TradeInfo } from '@/types'
 
@@ -20,7 +21,7 @@ interface TabInfo {
 type CashChange = Partial<Cash>
 
 
-// tab related:
+// tab related
 // tab group
 const tabConfig: TabInfo[] = [
   {
@@ -41,13 +42,13 @@ const tabConfig: TabInfo[] = [
     title: "在庫明細",
     color: "#F5B8A4",
   },
-  // {
-  //   id: 4,
-  //   buttonLabel: "売買履歴",
-  //   title: "履歴",
-  //   // color: "#F6DDE1"
-  //   color: "#542700",
-  // }
+  {
+    id: 4,
+    buttonLabel: "売買履歴",
+    title: "履歴",
+    // color: "#F6DDE1"
+    color: "#542700",
+  }
 ]
 // default on tab 3
 const activeTabId = ref<number>(3)
@@ -175,7 +176,7 @@ function tradeItem(trade: TradeInfo): void {
   else {
     // for new items, isPurchase is always true
     if (trade.isPurchase && trade.newName) {
-      addNewItem({ name: trade.newName, stock: trade.quantity, }
+      const newId = addNewItem({ name: trade.newName, stock: trade.quantity, }
       )
       // modify cash/balance
       if (trade.isCash) {
@@ -302,11 +303,12 @@ async function handleCashChange(changes: CashChange): Promise<void> {
             @registerTrade="activeTabId = 1, activeButton = 1" />
           <NewTradeTab v-else-if="currentTab.id === 1" :inventory :totalCashValue :currentBalance :trade :activeButton
             @submitTrade="(trade) => { handleSubmit(trade); activeTabId = 2; activeButton = 2; }" />
-          <CashTab v-else="currentTab.id === 2" :currentCash :totalCashValue :pendingCashChange :currentBalance
+          <CashTab v-else-if="currentTab.id === 2" :currentCash :totalCashValue :pendingCashChange :currentBalance
             :activeButton :isCash="trade.isCash ?? false" :amount="trade.isPurchase ? -trade.amount : trade.amount"
             @submitCashChange="(changes) => { handleCashChange(changes), activeTabId = 3, activeButton = 3; }" />
+          <TradeHistoryTab v-else-if="currentTab.id === 4" :inventory :tradeLog />
         </keep-alive>
-        <!-- ③ -->
+
       </div>
     </div>
   </main>
@@ -343,12 +345,12 @@ async function handleCashChange(changes: CashChange): Promise<void> {
 .tab-column {
   display: flex;
   flex-direction: column;
-  padding: 0 0 25px 25px;
+  padding: 0 0 0 25px;
   flex-shrink: 0;
 }
 
 .tab-button {
-  padding: 2rem 4rem 2rem 1.5rem;
+  padding: 2.385rem 4rem 2.385rem 1.5rem;
   margin-bottom: 8px;
   letter-spacing: 0.2rem;
   border: none;
@@ -364,6 +366,10 @@ async function handleCashChange(changes: CashChange): Promise<void> {
   min-width: 80px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   z-index: 0;
+}
+
+.tab-button:last-child{
+  margin-bottom:0;
 }
 
 .tab-button:hover {

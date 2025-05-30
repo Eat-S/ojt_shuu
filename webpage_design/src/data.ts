@@ -59,7 +59,7 @@ export async function getTradeLog(): Promise<TradeInfo[]> {
       // you'll need to add a field like 'itemId' to your TradeInfo interface.
 
       const tradeEntry: TradeInfo = {
-        id: docSnap.id, // The tradeinfo document's auto-generated ID
+        id: data.id, // The tradeinfo document's auto-generated ID
         quantity: data.quantity as number,
         amount: data.amount as number,
         isPurchase: data.isPurchase as boolean,
@@ -67,7 +67,6 @@ export async function getTradeLog(): Promise<TradeInfo[]> {
         date: data.date as string,
         newName: data.newName as string,
         // If you added itemId to TradeInfo type:
-        // itemId: data.id as string, // This is the item's ID from Firestore data
       };
       trades.push(tradeEntry);
     });
