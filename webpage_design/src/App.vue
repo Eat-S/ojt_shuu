@@ -27,7 +27,7 @@ const tabConfig: TabInfo[] = [
     id: 1,
     buttonLabel: "新規登録",
     title: "売買の新規登録",
-    color: "#F26E29",
+    color: "#F36E2A",
   },
   {
     id: 2,
@@ -41,6 +41,13 @@ const tabConfig: TabInfo[] = [
     title: "在庫明細",
     color: "#F5B8A4",
   },
+  // {
+  //   id: 4,
+  //   buttonLabel: "売買履歴",
+  //   title: "履歴",
+  //   // color: "#F6DDE1"
+  //   color: "#542700",
+  // }
 ]
 // default on tab 3
 const activeTabId = ref<number>(3)
@@ -126,7 +133,6 @@ const currentBalance = computed(() => {
 onMounted(async () => {
   inventory.value = await getInventoryItems();
   currentCash.value = await getCashDocument();
-  // currentCash.value = cashDoc ?? { 10000: 0, 5000: 0, 1000: 0, 500: 0, 100: 0, 50: 0, 10: 0, 5: 0, 1: 0 };
   tradeLog.value = await getTradeLog();
   initializeObjects()
 })
@@ -252,7 +258,7 @@ function handleSubmit(newTrade: TradeInfo): void {
   tradeItem(trade.value)
 }
 
-function handleCashChange(changes: CashChange): void {
+async function handleCashChange(changes: CashChange): Promise<void> {
   /**
    * Handle submitCashChange event from child component.
    * @param changes: object containing cash changes
@@ -263,8 +269,12 @@ function handleCashChange(changes: CashChange): void {
   updateCash(changes)
   console.log(`pending cash changes: ${JSON.stringify(pendingCashChange.value)}`)
   // initialize pending cash changes and trade:
-  initializeObjects()
+  console.log(`new trade to be update: ${JSON.stringify(trade.value)}`)
   addNewTradeInfo(trade.value)
+  initializeObjects()
+  inventory.value = await getInventoryItems();
+  currentCash.value = await getCashDocument();
+  tradeLog.value = await getTradeLog();
 }
 
 </script>

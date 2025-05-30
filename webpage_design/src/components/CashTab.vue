@@ -32,7 +32,7 @@ const cashSum = computed(() => {
   return sum
 })
 
-//TODO: warning if pendingCashChange+currentCash<0 for specific key and set to value where sum is 0
+// warning if pendingCashChange+currentCash<0 for specific key and set to value of currentCash[key]
 watchEffect(() => {
   for (const key in customizedCash.value) {
     const numKey = Number(key) as keyof Cash;
@@ -147,13 +147,13 @@ button {
   min-height: 50px;
   color: white;
   font-size: large;
-  background-color: #F26E29;
+  background-color: #F36E2A;
 }
 
 /* TODO: edit button position */
 
 button:hover {
-  background-color: #F26E29;
+  background-color: #F36E2A;
   cursor: pointer;
 }
 

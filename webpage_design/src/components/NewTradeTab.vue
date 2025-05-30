@@ -209,7 +209,7 @@ button:hover {
   gap: 1rem;
   padding: 1rem 3rem 1rem 1rem;
   color: black;
-  background-color: #F26E29;
+  background-color: #F36E2A;
   min-height: 80vh;
 }
 
